@@ -1,4 +1,4 @@
-module Cell (Cell, Wall(..), toForm) where
+module Cell (Cell, Wall(..), toForm, defaultCell) where
 
 import Color exposing (..)
 import Graphics.Collage exposing (..)
@@ -18,10 +18,12 @@ type alias Cell =
   , width : Float
   }
 
+defaultCell =
+  { walls = [N,E,S,W], height = 10, width = 10 }
 
 toForm : Cell -> Form
 toForm c =
-  group <| List.map (wall red) (wallSegment c)
+  group <| List.map (wall black) (wallSegment c)
 
 
 wallSegment : Cell -> List Path

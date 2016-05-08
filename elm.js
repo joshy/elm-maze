@@ -5449,13 +5449,43 @@ Elm.Cell.make = function (_elm) {
          default: return A2($Graphics$Collage.segment,{ctor: "_Tuple2",_0: 0 - hw,_1: 0 - hh},{ctor: "_Tuple2",_0: 0 - hw,_1: hh});}
    });
    var wallSegment = function (cell) {    return A2($List.map,singleWall(cell),cell.walls);};
-   var toForm = function (c) {    return $Graphics$Collage.group(A2($List.map,wall($Color.red),wallSegment(c)));};
+   var toForm = function (c) {    return $Graphics$Collage.group(A2($List.map,wall($Color.black),wallSegment(c)));};
    var Cell = F3(function (a,b,c) {    return {walls: a,height: b,width: c};});
    var W = {ctor: "W"};
    var S = {ctor: "S"};
    var E = {ctor: "E"};
    var N = {ctor: "N"};
-   return _elm.Cell.values = {_op: _op,toForm: toForm,Cell: Cell,N: N,E: E,S: S,W: W};
+   var defaultCell = {walls: _U.list([N,E,S,W]),height: 10,width: 10};
+   return _elm.Cell.values = {_op: _op,toForm: toForm,defaultCell: defaultCell,Cell: Cell,N: N,E: E,S: S,W: W};
+};
+Elm.Grid = Elm.Grid || {};
+Elm.Grid.make = function (_elm) {
+   "use strict";
+   _elm.Grid = _elm.Grid || {};
+   if (_elm.Grid.values) return _elm.Grid.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Cell = Elm.Cell.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var toListForm = function (g) {    return A2($List.map,$Cell.toForm,g);};
+   var draw = function (grid) {
+      var formList = toListForm(grid);
+      var n = $List.length(grid);
+      var s = _U.range(0,n);
+      var moveByX = A2($List.map,$Basics.toFloat,A2($List.map,function (n) {    return n * 10;},s));
+      var moved = A3($List.map2,$Graphics$Collage.moveX,moveByX,formList);
+      return $Graphics$Collage.group(moved);
+   };
+   var init = A2($List.repeat,5,$Cell.defaultCell);
+   var simpleGrid = draw(init);
+   var defaultGrid = function (_p0) {    return A2($List.repeat,2,A2($List.repeat,2,_p0));};
+   return _elm.Grid.values = {_op: _op,defaultGrid: defaultGrid,init: init,toListForm: toListForm,draw: draw,simpleGrid: simpleGrid};
 };
 Elm.Main = Elm.Main || {};
 Elm.Main.make = function (_elm) {
@@ -5468,6 +5498,7 @@ Elm.Main.make = function (_elm) {
    $Debug = Elm.Debug.make(_elm),
    $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
    $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $Grid = Elm.Grid.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
@@ -5486,21 +5517,6 @@ Elm.Main.make = function (_elm) {
    var c2 = {walls: _U.list([$Cell.S]),height: 10,width: 10};
    var c1 = {walls: _U.list([$Cell.E]),height: 10,width: 10};
    var c0 = {walls: _U.list([$Cell.N]),height: 10,width: 10};
-   var main = A3($Graphics$Collage.collage,
-   300,
-   300,
-   _U.list([A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: -120,_1: 20},$Cell.toForm(c0))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: -100,_1: 20},$Cell.toForm(c1))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: -80,_1: 20},$Cell.toForm(c2))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: -60,_1: 20},$Cell.toForm(c3))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: -40,_1: 20},$Cell.toForm(c4))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: -20,_1: 20},$Cell.toForm(c5))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: 0,_1: 20},$Cell.toForm(c6))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: 20,_1: 20},$Cell.toForm(c7))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: 40,_1: 20},$Cell.toForm(c8))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: 60,_1: 20},$Cell.toForm(c9))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: 80,_1: 20},$Cell.toForm(c10))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: 100,_1: 20},$Cell.toForm(c11))
-           ,A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: 120,_1: 20},$Cell.toForm(c12))]));
+   var main = A3($Graphics$Collage.collage,300,300,_U.list([$Grid.simpleGrid]));
    return _elm.Main.values = {_op: _op,main: main,c0: c0,c1: c1,c2: c2,c3: c3,c4: c4,c5: c5,c6: c6,c7: c7,c8: c8,c9: c9,c10: c10,c11: c11,c12: c12};
 };
