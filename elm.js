@@ -5481,9 +5481,18 @@ Elm.Grid.make = function (_elm) {
       var moved = A3($List.map2,$Graphics$Collage.moveX,moveByX,formList);
       return $Graphics$Collage.group(moved);
    };
-   var simpleGrid = drawL(A2($List.repeat,5,$Cell.defaultCell));
    var toLForm = function (grid) {    return A2($List.map,function (row) {    return A2($List.map,$Cell.toForm,row);},grid);};
-   return _elm.Grid.values = {_op: _op,toLForm: toLForm,toListForm: toListForm,drawL: drawL,simpleGrid: simpleGrid};
+   var draw = function (grid) {
+      var formList = toLForm(grid);
+      var n = $List.length(grid);
+      var moveByXY = A2($List.map,function (_p1) {    return $Basics.toFloat(function (n) {    return n * 12;}(_p1));},_U.range(0,n));
+      var o = A2($List.map,function (row) {    return A3($List.map2,$Graphics$Collage.moveY,moveByXY,row);},formList);
+      var r = A2($List.map,function (row) {    return A3($List.map2,$Graphics$Collage.moveX,moveByXY,row);},o);
+      return $Graphics$Collage.group($List.concat(r));
+   };
+   var defaultGrid = function (_p2) {    return A2($List.repeat,5,A2($List.repeat,5,_p2));};
+   var simpleGrid = draw(defaultGrid($Cell.defaultCell));
+   return _elm.Grid.values = {_op: _op,defaultGrid: defaultGrid,toLForm: toLForm,toListForm: toListForm,draw: draw,drawL: drawL,simpleGrid: simpleGrid};
 };
 Elm.Main = Elm.Main || {};
 Elm.Main.make = function (_elm) {
