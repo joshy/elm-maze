@@ -5473,19 +5473,17 @@ Elm.Grid.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
-   var toListForm = function (g) {    return A2($List.map,$Cell.toForm,g);};
-   var draw = function (grid) {
+   var toListForm = function (grid) {    return A2($List.map,$Cell.toForm,grid);};
+   var drawL = function (grid) {
       var formList = toListForm(grid);
       var n = $List.length(grid);
-      var s = _U.range(0,n);
-      var moveByX = A2($List.map,$Basics.toFloat,A2($List.map,function (n) {    return n * 10;},s));
+      var moveByX = A2($List.map,function (_p0) {    return $Basics.toFloat(function (n) {    return n * 10;}(_p0));},_U.range(0,n));
       var moved = A3($List.map2,$Graphics$Collage.moveX,moveByX,formList);
       return $Graphics$Collage.group(moved);
    };
-   var init = A2($List.repeat,5,$Cell.defaultCell);
-   var simpleGrid = draw(init);
-   var defaultGrid = function (_p0) {    return A2($List.repeat,2,A2($List.repeat,2,_p0));};
-   return _elm.Grid.values = {_op: _op,defaultGrid: defaultGrid,init: init,toListForm: toListForm,draw: draw,simpleGrid: simpleGrid};
+   var simpleGrid = drawL(A2($List.repeat,5,$Cell.defaultCell));
+   var toLForm = function (grid) {    return A2($List.map,function (row) {    return A2($List.map,$Cell.toForm,row);},grid);};
+   return _elm.Grid.values = {_op: _op,toLForm: toLForm,toListForm: toListForm,drawL: drawL,simpleGrid: simpleGrid};
 };
 Elm.Main = Elm.Main || {};
 Elm.Main.make = function (_elm) {
@@ -5494,7 +5492,6 @@ Elm.Main.make = function (_elm) {
    if (_elm.Main.values) return _elm.Main.values;
    var _U = Elm.Native.Utils.make(_elm),
    $Basics = Elm.Basics.make(_elm),
-   $Cell = Elm.Cell.make(_elm),
    $Debug = Elm.Debug.make(_elm),
    $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
    $Graphics$Element = Elm.Graphics.Element.make(_elm),
@@ -5504,19 +5501,6 @@ Elm.Main.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
-   var c12 = {walls: _U.list([$Cell.N,$Cell.E,$Cell.S,$Cell.W]),height: 10,width: 10};
-   var c11 = {walls: _U.list([$Cell.E]),height: 10,width: 10};
-   var c10 = {walls: _U.list([$Cell.N,$Cell.S]),height: 10,width: 10};
-   var c9 = {walls: _U.list([$Cell.S,$Cell.W]),height: 10,width: 10};
-   var c8 = {walls: _U.list([$Cell.E,$Cell.S]),height: 10,width: 10};
-   var c7 = {walls: _U.list([$Cell.N,$Cell.E]),height: 10,width: 10};
-   var c6 = {walls: _U.list([$Cell.W,$Cell.N]),height: 10,width: 10};
-   var c5 = {walls: _U.list([$Cell.S,$Cell.E]),height: 10,width: 10};
-   var c4 = {walls: _U.list([$Cell.N,$Cell.S]),height: 10,width: 10};
-   var c3 = {walls: _U.list([$Cell.W]),height: 10,width: 10};
-   var c2 = {walls: _U.list([$Cell.S]),height: 10,width: 10};
-   var c1 = {walls: _U.list([$Cell.E]),height: 10,width: 10};
-   var c0 = {walls: _U.list([$Cell.N]),height: 10,width: 10};
    var main = A3($Graphics$Collage.collage,300,300,_U.list([$Grid.simpleGrid]));
-   return _elm.Main.values = {_op: _op,main: main,c0: c0,c1: c1,c2: c2,c3: c3,c4: c4,c5: c5,c6: c6,c7: c7,c8: c8,c9: c9,c10: c10,c11: c11,c12: c12};
+   return _elm.Main.values = {_op: _op,main: main};
 };

@@ -6,28 +6,37 @@ import Graphics.Element exposing (..)
 
 import Cell exposing (..)
 
-type alias Grid a = List a
+type alias LGrid a = List a
 
+type alias Grid a = List (List a)
 
-defaultGrid = List.repeat 2 >> List.repeat 2
+--defaultGrid = List.repeat 2 >> List.repeat 2
 
-init : Grid Cell
-init = List.repeat 5 defaultCell
+toLForm : Grid Cell -> List (List Form)
+toLForm grid = List.map (\row -> List.map Cell.toForm row) grid
 
-
-toListForm : Grid Cell -> List Form
-toListForm g = List.map Cell.toForm g
+toListForm : LGrid Cell -> List Form
+toListForm grid = List.map Cell.toForm grid
 
 draw : Grid Cell -> Form
 draw grid =
   let
     n = List.length grid
-    s = [0..n]
-    moveByX = List.map toFloat <| List.map (\n -> n * 10) s
+    moveByXAndY = List.map (toFloat << (\n -> n * 10)) [0..n]
+    formList = toLForm grid
+
+  in
+   formList
+
+drawL : LGrid Cell -> Form
+drawL grid =
+  let
+    n = List.length grid
+    moveByX = List.map (toFloat << (\n -> n * 10)) [0..n]
     formList = toListForm grid
     moved = List.map2 moveX moveByX formList
   in
     group moved
 
 simpleGrid : Form
-simpleGrid = draw init
+simpleGrid = drawL <| List.repeat 5 defaultCell
