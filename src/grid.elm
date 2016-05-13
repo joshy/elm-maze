@@ -1,8 +1,6 @@
 module Grid exposing (..)
 
-import Color exposing (..)
 import Collage exposing (..)
-import Element exposing (..)
 import Cell exposing (..)
 
 
@@ -14,6 +12,7 @@ type alias Grid a =
     List (List a)
 
 
+defaultGrid : a -> List (List a)
 defaultGrid =
     List.repeat 5 >> List.repeat 5
 
@@ -31,20 +30,19 @@ toListForm grid =
 draw : Grid Cell -> Form
 draw grid =
     let
-        n =
-            List.length grid
-
-        moveByXY =
-            List.map (toFloat << (\n -> n * 8)) [0..n]
-
         formList =
             toLForm grid
 
-        o =
-            List.map (\row -> List.map2 moveY moveByXY row) formList
-
         r =
-            List.map (\row -> List.map (\cell -> moveX 52 cell) row) o
+            List.indexedMap
+                (\rowIndex row ->
+                    List.indexedMap
+                        (\columnIndex cell ->
+                            move ( toFloat rowIndex * 10, toFloat columnIndex * 10 ) cell
+                        )
+                        row
+                )
+                formList
     in
         group <| List.concat r
 
@@ -65,6 +63,11 @@ drawL grid =
             List.map2 moveX moveByX formList
     in
         group moved
+
+
+columnGrid : Form
+columnGrid =
+    drawL <| List.repeat 5 defaultCell
 
 
 simpleGrid : Form
